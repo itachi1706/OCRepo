@@ -1,6 +1,7 @@
 computer = require("computer")
 component = require("component")
 sides = require("sides")
+robot = component.robot
 rs = component.redstone
 c = component.crafting
 inv = component.inventory_controller
