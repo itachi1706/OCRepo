@@ -10,13 +10,13 @@ lowPowerVal = 50 -- Value for Low Power
 chargerSlot = 16 -- Slot to put OpenComputers Charger into
 chestSlot = 15 -- Slot to put chest into
 
-local function getPowerPercent()
+function getPowerPercent()
     local maxPower = computer.maxEnergy()
     local curPower = computer.energy()
     return math.floor(((curPower / maxPower) * 100) + 0.5)
 end
 
-local function detectPowerLow()
+function detectPowerLow()
     local percent = getPowerPercent()
     if (percent < lowPowerVal) then
         return true
@@ -25,7 +25,7 @@ local function detectPowerLow()
     end
 end
 
-local function detectPowerFull()
+function detectPowerFull()
     local percent = getPowerPercent()
     if (percent > 95) then
         return true
@@ -34,7 +34,7 @@ local function detectPowerFull()
     end
 end
 
-local function recharge()
+function recharge()
     robot.select(chargerSlot)
     while robot.compare() == false do
         robot.turnLeft()
@@ -47,11 +47,11 @@ local function recharge()
     robot.select(1)
 end
 
-local function crafting()
+function crafting()
     c.craft(1)
 end
 
-local function isBrokenBow(slot)
+function isBrokenBow(slot)
     item = inv.getStackInSlot(sides.front, slot)
     if item.name == "minecraft:bow" then -- Check if Bow
         if item.damage == item.maxDamage then -- Check durability
@@ -62,7 +62,7 @@ local function isBrokenBow(slot)
     return false
 end
 
-local function isBrokenBowInt(slot)
+function isBrokenBowInt(slot)
     item = inv.getStackInInternalSlot(slot)
     if item.name == "minecraft:bow" then -- Check if Bow
         if item.damage == item.maxDamage then -- Check durability
@@ -73,13 +73,13 @@ local function isBrokenBowInt(slot)
     return false
 end
 
-local function ensureCrafterClean()
+function ensureCrafterClean()
     for i=1,12 do
         robot.drop()
     end
 end
 
-local function getBrokenBowsToCraft()
+function getBrokenBowsToCraft()
     local size = inv.getInventorySize(sides.front)
     ensureCrafterClean()
     local first = false
