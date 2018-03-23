@@ -1,7 +1,7 @@
 computer = require("computer")
 component = require("component")
 sides = require("sides")
-robot = component.robot
+robot = require("robot")
 rs = component.redstone
 c = component.crafting
 inv = component.inventory_controller
@@ -37,7 +37,7 @@ end
 
 function recharge(chargerSlot)
     robot.select(chargerSlot)
-    while robot.compare(sides.front) == false do
+    while robot.compare() == false do
         robot.turnLeft()
     end
     rs.setOutput(sides.front, 15)
@@ -106,7 +106,7 @@ while true do
         recharge(chargerSlot)
     end
     robot.select(chestSlot)
-    while robot.compare(sides.front) == false do
+    while robot.compare() == false do
         robot.turnLeft()
     end
     getBrokenBowsToCraft()
