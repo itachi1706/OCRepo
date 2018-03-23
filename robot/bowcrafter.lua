@@ -6,9 +6,9 @@ c = component.crafting
 inv = component.inventory_controller
 
 -- Variables
-lowPowerVal = 50 -- Value for Low Power
-chargerSlot = 16 -- Slot to put OpenComputers Charger into
-chestSlot = 15 -- Slot to put chest into
+local lowPowerVal = 50 -- Value for Low Power
+local chargerSlot = 16 -- Slot to put OpenComputers Charger into
+local chestSlot = 15 -- Slot to put chest into
 
 function getPowerPercent()
     local maxPower = computer.maxEnergy()
@@ -16,7 +16,7 @@ function getPowerPercent()
     return math.floor(((curPower / maxPower) * 100) + 0.5)
 end
 
-function detectPowerLow()
+function detectPowerLow(lowPowerVal)
     local percent = getPowerPercent()
     if (percent < lowPowerVal) then
         return true
@@ -34,7 +34,7 @@ function detectPowerFull()
     end
 end
 
-function recharge()
+function recharge(chargerSlot)
     robot.select(chargerSlot)
     while robot.compare() == false do
         robot.turnLeft()
@@ -101,8 +101,8 @@ function getBrokenBowsToCraft()
 end
 
 while true do
-    if detectPowerLow() == true then
-        recharge()
+    if detectPowerLow(lowPowerVal) == true then
+        recharge(chargerSlot)
     end
     robot.select(chestSlot)
     while robot.compare() == false do
