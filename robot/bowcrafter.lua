@@ -37,7 +37,7 @@ end
 
 function recharge(chargerSlot)
     robot.select(chargerSlot)
-    while robot.compare() == false do
+    while robot.compare(sides.front) == false do
         robot.turnLeft()
     end
     rs.setOutput(sides.front, 15)
@@ -106,7 +106,7 @@ while true do
         recharge(chargerSlot)
     end
     robot.select(chestSlot)
-    while robot.compare() == false do
+    while robot.compare(sides.front) == false do
         robot.turnLeft()
     end
     getBrokenBowsToCraft()
