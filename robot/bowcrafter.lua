@@ -10,7 +10,6 @@ inv = component.inventory_controller
 local lowPowerVal = 50 -- Value for Low Power
 local chargerSlot = 16 -- Slot to put OpenComputers Charger into
 local chestSlot = 15 -- Slot to put chest into
-local debug = true -- Set to false in prod
 
 function getPowerPercent()
     local maxPower = computer.maxEnergy()
@@ -58,11 +57,11 @@ end
 
 function isBrokenBow(slot)
     item = inv.getStackInSlot(sides.front, slot)
-    if debug then
-        print(item.name.." | "..item.damage.." | "..item.durability.." | ("..slot..")")
+    if item == nil then
+        return false
     end
     if item.name == "minecraft:bow" then -- Check if Bow
-        if item.damage == item.maxDamage then -- Check durability
+        if item.damage == 0 then -- Check durability
             return false
         end
         return true
@@ -72,11 +71,11 @@ end
 
 function isBrokenBowInt(slot)
     item = inv.getStackInInternalSlot(slot)
-    if debug then
-        print(item.name.." | "..item.damage.." | "..item.durability.." | ("..slot..")")
+    if item == nil then
+        return false
     end
     if item.name == "minecraft:bow" then -- Check if Bow
-        if item.damage == item.maxDamage then -- Check durability
+        if item.damage == 0 then -- Check durability full
             return false
         end
         return true
