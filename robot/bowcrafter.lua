@@ -17,6 +17,11 @@ function getPowerPercent()
     return math.floor(((curPower / maxPower) * 100) + 0.5)
 end
 
+function quitProgram()
+    print("Stopping Program")
+    os.exit()
+end
+
 function detectPowerLow(lowPowerVal)
     local percent = getPowerPercent()
     if (percent < lowPowerVal) then
@@ -40,12 +45,10 @@ function recharge(chargerSlot)
     robot.select(chargerSlot)
     while robot.compare(true) == false do
         robot.turnLeft()
-        checkInterruptAndQuit()
     end
     rs.setOutput(sides.front, 15)
     while detectPowerFull() == false do
         os.sleep(5)
-        checkInterruptAndQuit()
     end
     rs.setOutput(sides.front, 0)
     robot.select(1)
@@ -93,21 +96,12 @@ function ensureCrafterClean()
     print("Cleaned crafting slots")
 end
 
-function checkInterruptAndQuit()
-    local id, _, x, y = event.pullMultiple("interrupted")
-    if id == "interrupted" then
-        print("Stopping Program")
-        os.exit()
-    end
-end
-
 function getBrokenBowsToCraft()
     local size = inv.getInventorySize(sides.front)
     ensureCrafterClean()
     local first = false
     robot.select(1)
     for i = 1, size do
-        checkInterruptAndQuit()
         if isBrokenBow(i) == true then
             inv.suckFromSlot(sides.front, i) -- Get Bow
             if first == false then
@@ -127,19 +121,18 @@ function getBrokenBowsToCraft()
 end
 
 while true do
+    event.listen("interrupted", quitProgram)
+    print("Press Ctrl+C or Ctrl+Alt+C to stop the program")
     if detectPowerLow(lowPowerVal) == true then
         recharge(chargerSlot)
     end
     robot.select(chestSlot)
     while robot.compare(true) == false do
         robot.turnLeft()
-        checkInterruptAndQuit()
     end
     print("Preparing to repair broken bows by merging them together")
     getBrokenBowsToCraft()
     print("Completed checking inventory for broken bows. Resting for 5 minutes")
-    checkInterruptAndQuit()
     os.sleep(300)
-    checkInterruptAndQuit()
 end
 
