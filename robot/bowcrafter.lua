@@ -23,9 +23,60 @@ function checkInterruptAndQuit()
     if id == nil then
     end
     if id == "interrupted" then
-        print("Stopping Program")
+        updateGUI("general", "Stopping Program")
         os.exit()
     end
+end
+
+function guiHeader()
+    term.setCursor(1,1)
+    term.write("========================================================================================", false)
+    term.setCursor(3,1)
+    term.write("CheesecakeNet OpenComputers Bow Crafting Robot", false)
+    term.setCursor(5,1)
+    term.write("========================================================================================", false)
+end
+
+function guiFooter(power)
+    local width,height = term.getViewport()
+    term.setCursor(height - 1, 1)
+    term.write("Battery Percentage: "..power.."%")
+    term.setCursor(height, 1)
+    term.write("Exit with Ctrl+C or Ctrl+Alt+C")
+end
+
+function updateGUI(...)
+    local task = arg[1]
+    local message = arg[2]
+    local int = 0
+    local ext = 0
+    local power = getPowerPercent()
+    if task == "craft" or task == "sleep" then
+        int = arg[3] -- Sleep: Time Elapsed
+        ext = arg[4] -- Sleep: Total Time
+    elseif task == "clear" then
+        int = arg[3]
+    end
+    term.clear()
+    term.setCursorBlink(false)
+    guiHeader()
+    term.setCursor(7,1)
+    term.write("Task (debug): "..task)
+    term.setCursor(8,1)
+    term.write("Current Action: "..message)
+    if task == "craft" or task == "clear" then
+        term.setCursor(9,1)
+        term.write("Robot Selected Slot: "..int)
+    end
+    if task == "craft" then
+        term.setCursor(10,1)
+        term.write("Selected Chest Slot: "..ext)
+    end
+    if task == "sleep" then
+        term.setCursor(9,1)
+        term.write("Sleep Timer: "..int.."/"..ext.." sec elapsed")
+    end
+    guiFooter()
 end
 
 function detectPowerLow(lowPowerVal)
@@ -47,7 +98,7 @@ function detectPowerFull()
 end
 
 function recharge(chargerSlot)
-    print("Recharging robot...")
+    updateGUI("general", "Recharging robot...")
     robot.select(chargerSlot)
     while robot.compare(true) == false do
         robot.turnLeft()
@@ -60,12 +111,12 @@ function recharge(chargerSlot)
     end
     rs.setOutput(sides.front, 0)
     robot.select(1)
-    print("Recharge complete")
+    updateGUI("general", "Recharge complete")
 end
 
-function crafting()
+function crafting(i)
     c.craft(1)
-    print("Crafting Complete")
+    updateGUI("craft", "Crafting bows together", robot.select(), i)
 end
 
 function isBrokenBow(slot)
@@ -98,10 +149,11 @@ end
 
 function ensureCrafterClean()
     for i=1,12 do
+        updateGUI("clear", "Clearing crafting slots of items", i)
         robot.select(i)
         robot.drop()
     end
-    print("Cleaned crafting slots")
+    updateGUI("clear", "Cleared crafting slots", i)
 end
 
 function getBrokenBowsToCraft()
@@ -111,6 +163,7 @@ function getBrokenBowsToCraft()
     robot.select(1)
     for i = 1, size do
         checkInterruptAndQuit()
+        updateGUI("craft", "Getting broken bows", robot.select(), i)
         if isBrokenBow(i) == true then
             inv.suckFromSlot(sides.front, i) -- Get Bow
             if first == false then
@@ -118,9 +171,9 @@ function getBrokenBowsToCraft()
                 robot.select(2)
             else
                 robot.select(1)
-                crafting() -- Craft together
+                crafting(i) -- Craft together
                 if isBrokenBowInt(1) == false then
-                    print("Repaired item dropped back into chest")
+                    updateGUI("craft", "Bow Repaired. Returning to chest", robot.select(), i)
                     robot.drop()
                     first = false
                 end
@@ -138,11 +191,14 @@ while true do
         robot.turnLeft()
         checkInterruptAndQuit()
     end
-    print("Preparing to repair broken bows by merging them together")
+    updateGUI("general", "Preparing to repair broken bows by merging them together")
     getBrokenBowsToCraft()
-    print("Completed checking inventory for broken bows. Resting for 5 minutes")
+    updateGUI("sleep", "Completed broken bow check. Resting for 5 minutes", 0, 300)
     checkInterruptAndQuit()
-    os.sleep(300)
+    for i=1,60 do
+        updateGUI("sleep", "Completed broken bow check. Resting for 5 minutes", i*5, 300)
+        os.sleep(5)
+    end
     checkInterruptAndQuit()
 end
 
