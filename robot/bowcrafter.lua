@@ -37,7 +37,7 @@ function guiFooter(power)
 end
 
 function updateGUI(...)
-    local arg = ...
+    local arg = {...}
     local task = arg[1]
     local message = arg[2]
     local int = 0
@@ -58,7 +58,7 @@ function updateGUI(...)
     term.write("Current Action: "..message)
     if task == "craft" or task == "clear" then
         term.setCursor(1,9)
-        term.write("Robot Selected Slot: "..int)
+        term.write("Robot Selected Slot: "..math.floor(int))
     end
     if task == "craft" then
         term.setCursor(1,10)
@@ -68,7 +68,7 @@ function updateGUI(...)
         term.setCursor(1,9)
         term.write("Sleep Timer: "..int.."/"..ext.." sec elapsed")
     end
-    guiFooter()
+    guiFooter(power)
 end
 
 function checkInterruptAndQuit()
@@ -155,7 +155,7 @@ function ensureCrafterClean()
         robot.select(i)
         robot.drop()
     end
-    updateGUI("clear", "Cleared crafting slots", i)
+    updateGUI("general", "Cleared crafting slots")
 end
 
 function getBrokenBowsToCraft()
