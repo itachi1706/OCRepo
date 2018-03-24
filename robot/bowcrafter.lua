@@ -17,6 +17,16 @@ function getPowerPercent()
     return math.floor(((curPower / maxPower) * 100) + 0.5)
 end
 
+function checkInterruptAndQuit()
+    local id = event.pull("interrupted")
+    if id == nil then
+    end
+    if id == "interrupted" then
+        print("Stopping Program")
+        os.exit()
+    end
+end
+
 function detectPowerLow(lowPowerVal)
     local percent = getPowerPercent()
     if (percent < lowPowerVal) then
@@ -91,14 +101,6 @@ function ensureCrafterClean()
         robot.drop()
     end
     print("Cleaned crafting slots")
-end
-
-function checkInterruptAndQuit()
-    local id, _, x, y = event.pullMultiple("interrupted")
-    if id == "interrupted" then
-        print("Stopping Program")
-        os.exit()
-    end
 end
 
 function getBrokenBowsToCraft()
