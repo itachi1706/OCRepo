@@ -2,6 +2,7 @@ computer = require("computer")
 component = require("component")
 sides = require("sides")
 robot = require("robot")
+event = require("event")
 rs = component.redstone
 c = component.crafting
 inv = component.inventory_controller
@@ -18,7 +19,7 @@ function getPowerPercent()
 end
 
 function checkInterruptAndQuit()
-    local id = event.pull("interrupted")
+    local id = event.pull(1, "interrupted")
     if id == nil then
     end
     if id == "interrupted" then
