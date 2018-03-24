@@ -3,6 +3,7 @@ component = require("component")
 sides = require("sides")
 robot = require("robot")
 event = require("event")
+term = require("term")
 rs = component.redstone
 c = component.crafting
 inv = component.inventory_controller
@@ -18,34 +19,25 @@ function getPowerPercent()
     return math.floor(((curPower / maxPower) * 100) + 0.5)
 end
 
-function checkInterruptAndQuit()
-    local id = event.pull(1, "interrupted")
-    if id == nil then
-    end
-    if id == "interrupted" then
-        updateGUI("general", "Stopping Program")
-        os.exit()
-    end
-end
-
 function guiHeader()
     term.setCursor(1,1)
     term.write("========================================================================================", false)
-    term.setCursor(3,1)
+    term.setCursor(1,3)
     term.write("CheesecakeNet OpenComputers Bow Crafting Robot", false)
-    term.setCursor(5,1)
+    term.setCursor(1,5)
     term.write("========================================================================================", false)
 end
 
 function guiFooter(power)
     local width,height = term.getViewport()
-    term.setCursor(height - 1, 1)
+    term.setCursor(1, height - 1)
     term.write("Battery Percentage: "..power.."%")
-    term.setCursor(height, 1)
+    term.setCursor(1, height)
     term.write("Exit with Ctrl+C or Ctrl+Alt+C")
 end
 
 function updateGUI(...)
+    local arg = ...
     local task = arg[1]
     local message = arg[2]
     local int = 0
@@ -60,23 +52,33 @@ function updateGUI(...)
     term.clear()
     term.setCursorBlink(false)
     guiHeader()
-    term.setCursor(7,1)
+    term.setCursor(1,7)
     term.write("Task (debug): "..task)
-    term.setCursor(8,1)
+    term.setCursor(1,8)
     term.write("Current Action: "..message)
     if task == "craft" or task == "clear" then
-        term.setCursor(9,1)
+        term.setCursor(1,9)
         term.write("Robot Selected Slot: "..int)
     end
     if task == "craft" then
-        term.setCursor(10,1)
+        term.setCursor(1,10)
         term.write("Selected Chest Slot: "..ext)
     end
     if task == "sleep" then
-        term.setCursor(9,1)
+        term.setCursor(1,9)
         term.write("Sleep Timer: "..int.."/"..ext.." sec elapsed")
     end
     guiFooter()
+end
+
+function checkInterruptAndQuit()
+    local id = event.pull(1, "interrupted")
+    if id == nil then
+    end
+    if id == "interrupted" then
+        updateGUI("general", "Stopping Program")
+        os.exit()
+    end
 end
 
 function detectPowerLow(lowPowerVal)
