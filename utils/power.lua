@@ -1,11 +1,15 @@
-function getPowerPercent()
+computer = require("computer")
+
+local power = {}
+
+function power.getPowerPercent()
     local maxPower = computer.maxEnergy()
     local curPower = computer.energy()
     return math.floor(((curPower / maxPower) * 100) + 0.5)
 end
 
-function detectPowerLow(lowPowerVal)
-    local percent = getPowerPercent()
+function power.detectPowerLow(lowPowerVal)
+    local percent = power.getPowerPercent()
     if (percent < lowPowerVal) then
         return true
     else
@@ -13,11 +17,13 @@ function detectPowerLow(lowPowerVal)
     end
 end
 
-function detectPowerFull()
-    local percent = getPowerPercent()
+function power.detectPowerFull()
+    local percent = power.getPowerPercent()
     if (percent > 95) then
         return true
     else
         return false
     end
 end
+
+return power

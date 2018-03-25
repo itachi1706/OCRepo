@@ -1,4 +1,6 @@
-local function secToClock(seconds)
+datetimeutil = {}
+
+local function datetimeutil.secToClock(seconds)
     local seconds = tonumber(seconds)
     if seconds <= 0 then
         return "00:00:00";
@@ -9,3 +11,5 @@ local function secToClock(seconds)
         return hours..":"..mins..":"..secs
     end
 end
+
+return datetimeutil

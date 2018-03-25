@@ -5,7 +5,7 @@ sides = require("sides")
 robot = require("robot")
 event = require("event")
 term = require("term")
-fsutil = require("filesize") -- github /utils/filesize.lua put in lib folder
+filesize = require("filesize") -- github /utils/filesize.lua put in lib folder
 dtutil = require("datetimeutil") -- github /utils/datetimeutil.lua put in lib folder
 putils = require("power") -- github /utils/power.lua put in lib folder
 rs = component.redstone
@@ -34,7 +34,7 @@ function guiFooter(power)
     term.setCursor(1, height - 2)
     term.write("RAM Usage: "..filesize(computer.totalMemory() - free, {round = 1}).."/"..filesize(computer.totalMemory(), {round = 1}))
     term.setCursor(1, height - 1)
-    term.write("Battery Percentage: "..power.."% | Uptime: "..secToClock(computer.uptime()).." seconds")
+    term.write("Battery Percentage: "..power.."% | Uptime: "..dtutil.secToClock(computer.uptime()).." seconds")
     term.setCursor(1, height)
     term.write("Exit with Ctrl+C or Ctrl+Alt+C")
 end
@@ -45,7 +45,7 @@ function updateGUI(...)
     local message = arg[2]
     local int = 0
     local ext = 0
-    local power = getPowerPercent()
+    local power = putils.getPowerPercent()
     if task == "craft" or task == "sleep" then
         int = arg[3] -- Sleep: Time Elapsed
         ext = arg[4] -- Sleep: Total Time
@@ -94,7 +94,7 @@ function recharge(chargerSlot)
         checkInterruptAndQuit()
     end
     rs.setOutput(sides.front, 15)
-    while detectPowerFull() == false do
+    while putils.detectPowerFull() == false do
         os.sleep(5)
         checkInterruptAndQuit()
     end
@@ -172,7 +172,7 @@ function getBrokenBowsToCraft()
 end
 
 while true do
-    if detectPowerLow(lowPowerVal) == true then
+    if putils.detectPowerLow(lowPowerVal) == true then
         recharge(chargerSlot)
     end
     robot.select(chestSlot)
