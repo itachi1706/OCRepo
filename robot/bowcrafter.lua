@@ -34,7 +34,7 @@ function guiFooter(power)
     term.setCursor(1, height - 2)
     term.write("RAM Usage: "..filesize(computer.totalMemory() - free, {round = 1}).."/"..filesize(computer.totalMemory(), {round = 1}))
     term.setCursor(1, height - 1)
-    term.write("Battery Percentage: "..power.."% | Uptime: "..dtutil.secToClock(computer.uptime()).." seconds")
+    term.write("Battery Percentage: "..power.."% | Uptime: "..dtutil.secToClock(computer.uptime()))
     term.setCursor(1, height)
     term.write("Exit with Ctrl+C or Ctrl+Alt+C")
 end
