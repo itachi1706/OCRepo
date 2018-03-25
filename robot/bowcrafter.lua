@@ -12,6 +12,7 @@ inv = component.inventory_controller
 local lowPowerVal = 50 -- Value for Low Power
 local chargerSlot = 16 -- Slot to put OpenComputers Charger into
 local chestSlot = 15 -- Slot to put chest into
+local debug = false -- Set to true for debug info on the screen
 
 function getPowerPercent()
     local maxPower = computer.maxEnergy()
@@ -52,8 +53,10 @@ function updateGUI(...)
     term.clear()
     term.setCursorBlink(false)
     guiHeader()
-    term.setCursor(1,7)
-    term.write("Task (debug): "..task)
+    if debug == true then
+        term.setCursor(1,7)
+        term.write("Task (debug): "..task)
+    end
     term.setCursor(1,8)
     term.write("Current Action: "..message)
     if task == "craft" or task == "clear" then
