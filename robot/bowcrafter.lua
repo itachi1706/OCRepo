@@ -1,10 +1,13 @@
+-- Imports
 computer = require("computer")
 component = require("component")
 sides = require("sides")
 robot = require("robot")
 event = require("event")
 term = require("term")
-filesize = require("filesize")
+fsutil = require("filesize") -- github /utils/filesize.lua put in lib folder
+dtutil = require("datetimeutil") -- github /utils/datetimeutil.lua put in lib folder
+putils = require("power") -- github /utils/power.lua put in lib folder
 rs = component.redstone
 c = component.crafting
 inv = component.inventory_controller
@@ -14,12 +17,6 @@ local lowPowerVal = 50 -- Value for Low Power
 local chargerSlot = 16 -- Slot to put OpenComputers Charger into
 local chestSlot = 15 -- Slot to put chest into
 local debug = false -- Set to true for debug info on the screen
-
-function getPowerPercent()
-    local maxPower = computer.maxEnergy()
-    local curPower = computer.energy()
-    return math.floor(((curPower / maxPower) * 100) + 0.5)
-end
 
 function guiHeader()
     term.setCursor(1,1)
@@ -35,9 +32,9 @@ function guiFooter(power)
     local free = computer.freeMemory()
     local uptime = computer.uptime()
     term.setCursor(1, height - 2)
-    term.write("RAM Usage: "..filesize(computer.totalMemory() - free, {round = 1}).."/"..filesize(computer.totalMemory(), {round = 1}).." | Uptime: "..computer.uptime().." seconds")
+    term.write("RAM Usage: "..filesize(computer.totalMemory() - free, {round = 1}).."/"..filesize(computer.totalMemory(), {round = 1}))
     term.setCursor(1, height - 1)
-    term.write("Battery Percentage: "..power.."%")
+    term.write("Battery Percentage: "..power.."% | Uptime: "..secToClock(computer.uptime()).." seconds")
     term.setCursor(1, height)
     term.write("Exit with Ctrl+C or Ctrl+Alt+C")
 end
@@ -86,24 +83,6 @@ function checkInterruptAndQuit()
     if id == "interrupted" then
         updateGUI("general", "Stopping Program")
         os.exit()
-    end
-end
-
-function detectPowerLow(lowPowerVal)
-    local percent = getPowerPercent()
-    if (percent < lowPowerVal) then
-        return true
-    else
-        return false
-    end
-end
-
-function detectPowerFull()
-    local percent = getPowerPercent()
-    if (percent > 95) then
-        return true
-    else
-        return false
     end
 end
 
