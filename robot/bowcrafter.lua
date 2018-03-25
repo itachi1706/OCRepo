@@ -4,6 +4,7 @@ sides = require("sides")
 robot = require("robot")
 event = require("event")
 term = require("term")
+filesize = require("filesize")
 rs = component.redstone
 c = component.crafting
 inv = component.inventory_controller
@@ -31,6 +32,10 @@ end
 
 function guiFooter(power)
     local width,height = term.getViewport()
+    local free = computer.freeMemory()
+    local uptime = computer.uptime()
+    term.setCursor(1, height - 2)
+    term.write("RAM Usage: "..filesize(computer.totalMemory() - free, {round = 1}).."/"..filesize(computer.totalMemory(), {round = 1}).." | Uptime: "..computer.uptime().." seconds")
     term.setCursor(1, height - 1)
     term.write("Battery Percentage: "..power.."%")
     term.setCursor(1, height)
