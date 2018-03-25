@@ -185,7 +185,7 @@ while true do
     updateGUI("sleep", "Completed broken bow check. Resting for 5 minutes", 0, 300)
     checkInterruptAndQuit()
     for i=1,60 do
-        updateGUI("sleep", "Completed broken bow check. Resting for 5 minutes", i*5, 300)
+        updateGUI("sleep", "Completed bow repairs. Resting...", i*5, 300)
         os.sleep(5)
         checkInterruptAndQuit()
     end
